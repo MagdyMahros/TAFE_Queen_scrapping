@@ -179,3 +179,31 @@ for each_url in course_links_file:
         if 'by location' in avi_list and 'international students' in avi_list:
             course_data['Availability'] = 'A'
     print('AVAILABILITY: ' + course_data['Availability'])
+
+    # CITY
+    city_list = soup.find_all('a', class_='r-tabs-anchor')
+    if city_list:
+        temp_cities = []
+        for city in city_list:
+            temp_cities.append(city.get_text().strip().lower())
+        temp_cities = ' '.join(temp_cities)
+        # print(temp_cities)
+        if 'brisbane' in temp_cities:
+            actual_cities.append('brisbane')
+        if 'gold coast' in temp_cities:
+            actual_cities.append('queensland')
+        if 'darling downs' in temp_cities:
+            actual_cities.append('queensland')
+        if 'queensland' in temp_cities:
+            actual_cities.append('queensland')
+    else:
+        actual_cities.append('online')
+    print('CITY: ', actual_cities)
+
+
+
+
+
+
+
+
