@@ -110,3 +110,28 @@ for each_url in course_links_file:
         if description_p:
             course_data['Description'] = description_p.get_text().strip()
         print('COURSE DESCRIPTION: ', course_data['Description'])
+
+    # DURATION & DURATION_TIME / PART-TIME & FULL-TIME
+    duration = soup.find('td', attrs={'data-th': 'Duration'})
+    work_load = soup.find('td', attrs={'data-th': 'Workload'})
+    if duration:
+        converted_duration = dura.convert_duration(duration.get_text().strip())
+        if converted_duration is not None:
+            duration_list = list(converted_duration)
+            if duration_list[0] == 1 and 'Years' in duration_list[1]:
+                duration_list[1] = 'Year'
+            elif duration_list[0] == 1 and 'Months' in duration_list[1]:
+                duration_list[1] = 'Month'
+            course_data['Duration'] = duration_list[0]
+            course_data['Duration_Time'] = duration_list[1]
+            print('DURATION/DURATION-TIME', str(course_data['Duration']) + ' / ' + course_data['Duration_Time'])
+    if work_load:
+        if 'part-time' in work_load.get_text().lower() or 'part time' in work_load.get_text().lower():
+            course_data['Part_Time'] = 'yes'
+        else:
+            course_data['Part_Time'] = 'no'
+        if 'full-time' in work_load.get_text().lower() or 'full time' in work_load.get_text().lower():
+            course_data['Full_Time'] = 'yes'
+        else:
+            course_data['Full_Time'] = 'no'
+        print('FULL-TIME/PART-TIME: ', course_data['Full_Time'] + ' / ' + course_data['Part_Time'])
