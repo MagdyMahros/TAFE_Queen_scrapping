@@ -40,13 +40,16 @@ csv_file = csv_file_path.__str__() + '/SUT_undergrad.csv'
 course_data = {'Level_Code': '', 'University': 'Swinburne University of Technology', 'City': '', 'Country': 'Australia',
                'Course': '', 'Int_Fees': '', 'Local_Fees': '', 'Currency': 'AUD', 'Currency_Time': 'year',
                'Duration': '', 'Duration_Time': '', 'Full_Time': '', 'Part_Time': '', 'Prerequisite_1': '',
-               'Prerequisite_2': 'IELTS', 'Prerequisite_3': '', 'Prerequisite_1_grade': '', 'Prerequisite_2_grade': '6.0',
+               'Prerequisite_2': 'IELTS', 'Prerequisite_3': '', 'Prerequisite_1_grade': '',
+               'Prerequisite_2_grade': '6.0',
                'Prerequisite_3_grade': '', 'Website': '', 'Course_Lang': '', 'Availability': '', 'Description': '',
                'Career_Outcomes': '', 'Online': '', 'Offline': '', 'Distance': '', 'Face_to_Face': '',
                'Blended': '', 'Remarks': ''}
 
-possible_cities = {'rockhampton': 'Rockhampton', 'cairns': 'Cairns', 'bundaberg': 'Bundaberg', 'townsville': 'Townsville',
-                   'online': 'Online', 'gladstone': 'Gladstone', 'mackay': 'Mackay', 'mixed': 'Online', 'yeppoon': 'Yeppoon',
+possible_cities = {'rockhampton': 'Rockhampton', 'cairns': 'Cairns', 'bundaberg': 'Bundaberg',
+                   'townsville': 'Townsville',
+                   'online': 'Online', 'gladstone': 'Gladstone', 'mackay': 'Mackay', 'mixed': 'Online',
+                   'yeppoon': 'Yeppoon',
                    'brisbane': 'Brisbane', 'sydney': 'Sydney', 'queensland': 'Queensland', 'melbourne': 'Melbourne',
                    'albany': 'Albany', 'perth': 'Perth', 'adelaide': 'Adelaide', 'noosa': 'Noosa', 'emerald': 'Emerald',
                    'hawthorn': 'Hawthorn', 'wantirna': 'Wantirna', 'prahran': 'Prahran'}
@@ -77,3 +80,33 @@ for each_url in course_links_file:
     if title:
         course_data['Course'] = title.get_text().strip()
         print('COURSE TITLE: ', title.get_text().strip())
+
+    # DECIDE THE LEVEL CODE
+    for i in level_key:
+        for j in level_key[i]:
+            if j in course_data['Course']:
+                course_data['Level_Code'] = i
+    print('COURSE LEVEL CODE: ', course_data['Level_Code'])
+
+    # DECIDE THE FACULTY
+    for i in faculty_key:
+        for j in faculty_key[i]:
+            if j.lower() in course_data['Course'].lower():
+                course_data['Faculty'] = i
+    print('COURSE FACULTY: ', course_data['Faculty'])
+
+    # COURSE LANGUAGE
+    for language in possible_languages:
+        if language in course_data['Course']:
+            course_data['Course_Lang'] = language
+        else:
+            course_data['Course_Lang'] = 'English'
+    print('COURSE LANGUAGE: ', course_data['Course_Lang'])
+
+    # COURSE DESCRIPTION
+    description = soup.find('div', class_='tq-introduction')
+    if description:
+        description_p = description.find('p')
+        if description_p:
+            course_data['Description'] = description_p.get_text().strip()
+        print('COURSE DESCRIPTION: ', course_data['Description'])
