@@ -37,7 +37,7 @@ course_links_file = open(course_links_file_path, 'r')
 csv_file_path = Path(os.getcwd().replace('\\', '/'))
 csv_file = csv_file_path.__str__() + '/SUT_undergrad.csv'
 
-course_data = {'Level_Code': '', 'University': 'Swinburne University of Technology', 'City': '', 'Country': 'Australia',
+course_data = {'Level_Code': '', 'University': 'TAFE Queensland', 'City': '', 'Country': 'Australia',
                'Course': '', 'Int_Fees': '', 'Local_Fees': '', 'Currency': 'AUD', 'Currency_Time': 'year',
                'Duration': '', 'Duration_Time': '', 'Full_Time': '', 'Part_Time': '', 'Prerequisite_1': '',
                'Prerequisite_2': 'IELTS', 'Prerequisite_3': '', 'Prerequisite_1_grade': '',
@@ -135,3 +135,34 @@ for each_url in course_links_file:
         else:
             course_data['Full_Time'] = 'no'
         print('FULL-TIME/PART-TIME: ', course_data['Full_Time'] + ' / ' + course_data['Part_Time'])
+
+    # DELEVERY
+    delivery = soup.find('td', attrs={'data-th': 'Study Mode'})
+    course_data['Online'] = 'no'
+    if delivery:
+        delivery_text = delivery.get_text().lower()
+        # print(delivery_text)
+        if 'classroom' in delivery_text or 'recognition of prior learning' in delivery_text:
+            course_data['Face_to_Face'] = 'yes'
+            course_data['Offline'] = 'yes'
+        else:
+            course_data['Face_to_Face'] = 'no'
+            course_data['Offline'] = 'no'
+        if 'mixed mode' in delivery_text:
+            course_data['Online'] = 'yes'
+            course_data['Face_to_Face'] = 'yes'
+            course_data['Offline'] = 'yes'
+            course_data['Blended'] = 'yes'
+        else:
+            course_data['Blended'] = 'no'
+        if 'mobile' in delivery_text:
+            course_data['Distance'] = 'yes'
+        else:
+            course_data['Distance'] = 'no'
+    else:
+        course_data['Online'] = 'yes'
+    print('DELIVERY: online: ' + course_data['Online'] + ' offline: ' + course_data['Offline'] + ' face to face: ' +
+          course_data['Face_to_Face'] + ' blended: ' + course_data['Blended'] + ' distance: ' +
+          course_data['Distance'])
+
+
