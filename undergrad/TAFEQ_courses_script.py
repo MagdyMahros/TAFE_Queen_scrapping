@@ -12,10 +12,6 @@ import time
 from pathlib import Path
 from selenium import webdriver
 import bs4 as bs4
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import os
 import copy
 from CustomMethods import TemplateData
@@ -187,7 +183,7 @@ for each_url in course_links_file:
         for city in city_list:
             temp_cities.append(city.get_text().strip().lower())
         temp_cities = ' '.join(temp_cities)
-        # print(temp_cities)
+        print(temp_cities)
         if 'brisbane' in temp_cities:
             actual_cities.append('brisbane')
         if 'gold coast' in temp_cities:
@@ -199,6 +195,25 @@ for each_url in course_links_file:
     else:
         actual_cities.append('online')
     print('CITY: ', actual_cities)
+
+    # FEES
+    fee_header = soup.find_all('td', attrs={'data-th': 'Cost'})
+    if fee_header:
+        course_data['Int_Fees'] = ''
+        course_data['Local_Fees'] = ''
+        for element in fee_header:
+            fee_text = element.get_text().lower()
+            if 'international' in fee_text:
+                int_fee = re.search(r"\d+(?:,\d+)|\d+", fee_text)
+                if int_fee is not None:
+                    course_data['Int_Fees'] = int_fee.group()
+            else:
+                loc_fee = re.search(r"\d+(?:,\d+)|\d+", fee_text)
+                if loc_fee is not None:
+                    course_data['Local_Fees'] = loc_fee.group()
+    print('INTERNATIONAL FEE', course_data['Int_Fees'])
+    print('LOCAL FEE', course_data['Local_Fees'])
+
 
 
 
