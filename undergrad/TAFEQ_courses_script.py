@@ -165,4 +165,17 @@ for each_url in course_links_file:
           course_data['Face_to_Face'] + ' blended: ' + course_data['Blended'] + ' distance: ' +
           course_data['Distance'])
 
-
+    # AVAILABILITY
+    heading_list = soup.find_all('div', class_='tq-accordion-item__heading')
+    if heading_list:
+        avi_list = []
+        for element in heading_list:
+            avi_list.append(element.get_text().strip().lower())
+        avi_list = ' '.join(avi_list)
+        if 'by location' in avi_list:
+            course_data['Availability'] = 'D'
+        if 'international students' in avi_list:
+            course_data['Availability'] = 'I'
+        if 'by location' in avi_list and 'international students' in avi_list:
+            course_data['Availability'] = 'A'
+    print('AVAILABILITY: ' + course_data['Availability'])
